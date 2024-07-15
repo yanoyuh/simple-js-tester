@@ -1,13 +1,22 @@
 class Utils {
-    static createInterfaceElement(type, name, params=null, defaultValue=null) {
-        let interfaceElement = document.createElement('div');
-        interfaceElement.className = 'interface-element';
+
+    /**
+     * 入力フォーム要素を生成
+     * @param {*} name 
+     * @param {*} type 
+     * @param {*} params 
+     * @param {*} defaultValue 
+     * @returns 
+     */
+    static createInputFormElement(name, type = 'text', params = null, defaultValue = null) {
+        let inputFormElement = document.createElement('div');
+        inputFormElement.className = 'interface-element';
         let label = document.createElement('label');
         label.innerText = name;
-        interfaceElement.appendChild(label);
+        inputFormElement.appendChild(label);
         let valueElement = null;
 
-        if (['text', 'button'].includes(type)) {
+        if (['text', 'password'].includes(type)) {
             valueElement = document.createElement("input");
             valueElement.type = type;
             valueElement.name = name;
@@ -29,7 +38,7 @@ class Utils {
                 } else if (type == 'checkbox' && Array.isArray(defaultValue)) {
                     for (let i = 0; i < defaultValue.length; i++) {
                         valueElement.querySelector(`input[value=${defaultValue[i]}]`).checked = true;
-                    }                
+                    }
                 }
             }
         } else if (type == "select") {
@@ -49,11 +58,29 @@ class Utils {
             valueElement.name = name;
             valueElement.value = defaultValue;
         }
-        interfaceElement.appendChild(valueElement);
-        return interfaceElement;
+        inputFormElement.appendChild(valueElement);
+        return inputFormElement;
     }
 
-    static getFormValue( name ) {
+    /**
+     * ボタン要素を生成
+     * @param {*} name 
+     * @param {*} callback 
+     * @returns 
+     */
+    static createButtonElement(name, callback) {
+        let buttonElement = document.createElement('button');
+        buttonElement.innerText = name;
+        buttonElement.addEventListener('click', callback);
+        return buttonElement;
+    }
+
+    /**
+     * フォームの値を取得
+     * @param {*} name 
+     * @returns 
+     */
+    static getFormValue(name) {
         let element = document.querySelector(`[name=${name}]`);
         if (element.tagName == 'INPUT' && ['text', 'radio', 'checkbox'].includes(element.type)) {
             return element.value;
@@ -73,7 +100,12 @@ class Utils {
         }
     }
 
-    static setFormValue( name, value ) {
+    /**
+     * フォームに値を設定
+     * @param {*} name 
+     * @param {*} value 
+     */
+    static setFormValue(name, value) {
         let element = document.querySelector(`[name=${name}]`);
         if (element.tagName == 'INPUT' && ['text', 'radio', 'checkbox'].includes(element.type)) {
             element.value = value;
@@ -87,5 +119,57 @@ class Utils {
                 elements[i].checked = value.includes(elements[i].value);
             }
         }
+    }
+
+    /**
+     * ファイルのダウンロード
+     * @param {*} blob 
+     * @param {*} filename 
+     */
+    static downloadFile(blob, filename) {
+        let downloadLink;
+        downloadLink = document.createElement('a');
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(blob);
+        downloadLink.style.display = 'none';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+
+    /**
+     * jsonをcsvに変換
+     * @param {*} json 
+     * @returns 
+     */
+    static json2csv(json) {
+        let result = [];
+        let headers = [];
+        for (let key in json[0]) {
+            headers.push(key);
+        }
+        result.push(headers.join(','));
+        for (let i = 0; i < json.length; i++) {
+            let line = [];
+            for (let key in json[i]) {
+                let txt = json[i][key];
+                // 改行コードをそのまま出力
+                if (txt.indexOf('\n') >= 0) {
+                    txt = txt.replace(/\n/g, '\\n');
+                }
+                if (txt.indexOf('\r') >= 0) {
+                    txt = txt.replace(/\r/g, '\\r');
+                }
+                if (txt.indexOf(',') >= 0) {
+                    txt = txt.replace(/,/g, '\\,');
+                }
+                if (txt.indexOf('"') >= 0) {
+                    txt = txt.replace(/"/g, '""');
+                }
+                txt = `"${txt}"`;
+                line.push(txt);
+            }
+            result.push(line.join(','));
+        }
+        return result.join('\n');
     }
 }

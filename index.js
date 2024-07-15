@@ -6,19 +6,25 @@ class Index {
     constructor() {
         let mainElement = document.querySelector('#main');
 
-        mainElement.append(Utils.createInterfaceElement('textarea', 'json'));
-        
-        let executeBtn = Utils.createInterfaceElement('button', 'execute', null, 'execute');
-        executeBtn.addEventListener('click', ()=> {
-            let value = Utils.getFormValue('json');
-            let obj = JSON.parse(value);
-            let result = JSON.stringify(obj, null, 2);
-            Utils.setFormValue('result', result);
-        });
-        
-        mainElement.append(executeBtn);
-        
-        mainElement.append(Utils.createInterfaceElement('textarea', 'result'));
-    }
+        // 入力フォーム
+        mainElement.append(Utils.createInputFormElement('json', 'textarea'));
 
+        // 実行ボタン
+        mainElement.append(Utils.createButtonElement('execute', () => {
+            let json = Utils.getFormValue('json');
+            let obj = JSON.parse(json);
+            let csv = Utils.json2csv(obj);
+            Utils.setFormValue('result', csv);
+        }));
+
+        // 出力フォーム
+        mainElement.append(Utils.createInputFormElement('result', 'textarea'));
+
+        // ダウンロード
+        mainElement.append(Utils.createButtonElement('download', () => {
+            let result = Utils.getFormValue('result');
+            Utils.downloadFile(new Blob([result], { type: 'text/csv' }), 'result.csv');
+        }));
+
+    }
 }
