@@ -23,7 +23,7 @@ class Index {
         // ダウンロード
         mainElement.append(Utils.createButtonElement('download', () => {
             let result = Utils.getFormValue('result');
-            Utils.downloadFile(new Blob([result], { type: 'text/csv' }), 'result.csv');
+            Utils.donwloadText(result, 'result.csv');
         }));
 
     }

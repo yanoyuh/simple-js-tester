@@ -136,6 +136,11 @@ class Utils {
         downloadLink.click();
     }
 
+    static donwloadText(text, filename) {
+        let blob = new Blob([text], { type: 'text/plain' });
+        this.downloadFile(blob, filename);
+    }
+
     /**
      * jsonをcsvに変換
      * @param {*} json 
