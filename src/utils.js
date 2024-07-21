@@ -1,5 +1,7 @@
 class Utils {
 
+    /** ---------- フォーム操作系 ---------- **/
+
     /**
      * 入力フォーム要素を生成
      * @param {*} name 
@@ -121,6 +123,8 @@ class Utils {
         }
     }
 
+    /** ---------- ファイルダウンロード ---------- **/
+
     /**
      * ファイルのダウンロード
      * @param {*} blob 
@@ -136,10 +140,17 @@ class Utils {
         downloadLink.click();
     }
 
+    /**
+     * テキストファイルのダウンロード
+     * @param {*} text 
+     * @param {*} filename 
+     */
     static donwloadText(text, filename) {
         let blob = new Blob([text], { type: 'text/plain' });
         this.downloadFile(blob, filename);
     }
+
+    /** ---------- 変換系 ---------- **/
 
     /**
      * jsonをcsvに変換
@@ -177,4 +188,8 @@ class Utils {
         }
         return result.join('\n');
     }
+
+    /** ---------- 日付系 ---------- **/
+    // @todo
+
 }
